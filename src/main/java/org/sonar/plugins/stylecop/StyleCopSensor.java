@@ -42,6 +42,9 @@ import java.util.Set;
 
 public class StyleCopSensor implements Sensor {
 
+  private static final String CUSTOM_RULE_KEY = "CustomRuleTemplate";
+  private static final String CUSTOM_RULE_NAME_PARAMETER = "RuleName";
+  private static final String CUSTOM_RULE_ANALYZER_ID_PARAMETER = "AnalyzerId";
   private static final Logger LOG = LoggerFactory.getLogger(StyleCopSensor.class);
 
   private final Settings settings;
@@ -149,7 +152,13 @@ public class StyleCopSensor implements Sensor {
   private List<String> enabledRuleConfigKeys() {
     ImmutableList.Builder<String> builder = ImmutableList.builder();
     for (ActiveRule activeRule : profile.getActiveRulesByRepository(StyleCopPlugin.REPOSITORY_KEY)) {
-      builder.add(activeRule.getConfigKey());
+      if (!CUSTOM_RULE_KEY.equals(activeRule.getRuleKey())) {
+        String effectiveConfigKey = activeRule.getConfigKey();
+        if (effectiveConfigKey == null) {
+          effectiveConfigKey = activeRule.getParameter(CUSTOM_RULE_ANALYZER_ID_PARAMETER) + "#" + activeRule.getParameter(CUSTOM_RULE_NAME_PARAMETER);
+        }
+        builder.add(effectiveConfigKey);
+      }
     }
     return builder.build();
   }
@@ -157,7 +166,11 @@ public class StyleCopSensor implements Sensor {
   private Set<String> enabledRuleKeys() {
     ImmutableSet.Builder<String> builder = ImmutableSet.builder();
     for (ActiveRule activeRule : profile.getActiveRulesByRepository(StyleCopPlugin.REPOSITORY_KEY)) {
-      builder.add(activeRule.getRuleKey());
+    	String effectiveConfigKey = activeRule.getRuleKey();
+        if (effectiveConfigKey == null) {
+          effectiveConfigKey = activeRule.getParameter(CUSTOM_RULE_NAME_PARAMETER);
+        }
+        builder.add(effectiveConfigKey);
     }
     return builder.build();
   }
