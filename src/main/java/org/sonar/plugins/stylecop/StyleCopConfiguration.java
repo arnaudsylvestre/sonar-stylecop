@@ -25,6 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.config.Settings;
 
+import java.io.File;
+
 public class StyleCopConfiguration {
 
   private static final Logger LOG = LoggerFactory.getLogger(StyleCopConfiguration.class);
@@ -50,8 +52,10 @@ public class StyleCopConfiguration {
 
       result = mergePathAndFile(requiredProperty(netFrameworkPropertyKey), "MSBuild.exe");
     } else {
-      result = settings.getString(StyleCopPlugin.STYLECOP_MSBUILD_PATH_PROPERTY_KEY);
+      result = requiredProperty(StyleCopPlugin.STYLECOP_MSBUILD_PATH_PROPERTY_KEY);
     }
+
+    checkFileExists(result, StyleCopPlugin.STYLECOP_MSBUILD_PATH_PROPERTY_KEY);
 
     return result;
   }
@@ -64,14 +68,30 @@ public class StyleCopConfiguration {
       logDeprecatedPropertyUsage(StyleCopPlugin.STYLECOP_DLL_PATH_PROPERTY_KEY, StyleCopPlugin.STYLECOP_OLD_INSTALL_DIRECTORY_PROPERTY_KEY);
       result = mergePathAndFile(settings.getString(StyleCopPlugin.STYLECOP_OLD_INSTALL_DIRECTORY_PROPERTY_KEY), "StyleCop.dll");
     } else {
-      result = settings.getString(StyleCopPlugin.STYLECOP_DLL_PATH_PROPERTY_KEY);
+      result = requiredProperty(StyleCopPlugin.STYLECOP_DLL_PATH_PROPERTY_KEY);
     }
+
+    checkFileExists(result, StyleCopPlugin.STYLECOP_DLL_PATH_PROPERTY_KEY);
 
     return result;
   }
 
+  private static void checkFileExists(String path, String property) {
+    File file = new File(path);
+    if (!file.isFile()) {
+      throw new IllegalArgumentException(
+        "Cannot find the file \"" + file.getAbsolutePath() + "\" provided by the property \"" + property + "\".");
+    }
+  }
+
   public String projectFilePath() {
-    return requiredProperty(StyleCopPlugin.STYLECOP_PROJECT_FILE_PATH_PROPERTY_KEY);
+    String result = settings.getString(StyleCopPlugin.STYLECOP_PROJECT_FILE_PATH_PROPERTY_KEY);
+    if (result == null) {
+      throw new IllegalArgumentException("The property \"" + StyleCopPlugin.STYLECOP_PROJECT_FILE_PATH_PROPERTY_KEY + "\" must be set to execute StyleCop rules. "
+        + "This property can be automatically set by the Analysis Bootstrapper for Visual Studio Projects plugin, see: http://docs.codehaus.org/x/TAA1Dg.");
+    }
+
+    return result;
   }
 
   public int timeoutMinutes() {
@@ -89,7 +109,7 @@ public class StyleCopConfiguration {
   }
 
   private static String mergePathAndFile(String s1, String s2) {
-    return s1.endsWith("/") || s1.endsWith("\\") ? s1 + s2 : s1 + "/" + s2;
+    return new File(new File(s1), s2).getAbsolutePath();
   }
 
   private static void logDeprecatedPropertyUsage(String newPropertyKey, String oldProperty) {
