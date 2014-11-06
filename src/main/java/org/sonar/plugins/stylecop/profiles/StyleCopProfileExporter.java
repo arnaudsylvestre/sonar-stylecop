@@ -22,6 +22,7 @@ package org.sonar.plugins.stylecop.profiles;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +37,9 @@ import org.sonar.api.rules.ActiveRule;
 import org.sonar.api.rules.Rule;
 import org.sonar.api.rules.RuleFinder;
 import org.sonar.api.rules.RulePriority;
-import org.sonar.api.rules.XMLRuleParser;
+import org.sonar.api.rules.RuleQuery;
 import org.sonar.api.utils.SonarException;
 import org.sonar.plugins.stylecop.StyleCopPlugin;
-import org.sonar.plugins.stylecop.StyleCopSensor;
 
 import com.google.common.collect.Maps;
 
@@ -107,8 +107,7 @@ public class StyleCopProfileExporter extends ProfileExporter {
       activeRuleMap.put(activeRule.getRule().getKey(), activeRule);
     }
 
-    List<Rule> initialRules = new XMLRuleParser().parse(StyleCopProfileExporter.class
-        .getResourceAsStream("/org/sonar/plugins/csharp/stylecop/rules/rules.xml"));
+    Collection<Rule> initialRules = ruleFinder.findAll(RuleQuery.create().withRepositoryKey(StyleCopPlugin.REPOSITORY_KEY));
     for (Rule rule : initialRules) {
       // Extracts the rule's information
       String configKey = rule.getConfigKey();

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<StyleCopSettings Version="4.3">
+    <Analyzers>
+        <Analyzer AnalyzerId="Microsoft.StyleCop.CSharp.NamingRules">
+            <Rules>
+                <Rule Name="ElementMustBeginWithUpperCaseLetter" SonarPriority="major">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">True</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
+            </Rules>
+        </Analyzer>
+        <Analyzer AnalyzerId="Microsoft.StyleCop.CSharp.SpacingRules">
+            <Rules>
+                <Rule Name="KeywordsMustBeSpacedCorrectly" SonarPriority="minor">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">True</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
+                <Rule Name="NotActivatedRule" SonarPriority="">
+                    <RuleSettings>
+                        <BooleanProperty Name="Enabled">False</BooleanProperty>
+                    </RuleSettings>
+                </Rule>
+            </Rules>
+        </Analyzer>
+    </Analyzers>
+</StyleCopSettings>
