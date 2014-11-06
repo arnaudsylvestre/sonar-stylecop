@@ -20,10 +20,13 @@
 package org.sonar.plugins.stylecop;
 
 import com.google.common.collect.ImmutableList;
+
 import org.sonar.api.PropertyType;
 import org.sonar.api.SonarPlugin;
 import org.sonar.api.config.PropertyDefinition;
 import org.sonar.api.resources.Qualifiers;
+import org.sonar.plugins.stylecop.profiles.StyleCopProfileExporter;
+import org.sonar.plugins.stylecop.profiles.StyleCopProfileImporter;
 
 import javax.annotation.Nullable;
 
@@ -33,6 +36,7 @@ public class StyleCopPlugin extends SonarPlugin {
 
   public static final String LANGUAGE_KEY = "cs";
   public static final String REPOSITORY_KEY = "stylecop";
+  public static final String REPOSITORY_NAME = "StyleCop";
 
   public static final String STYLECOP_MSBUILD_PATH_PROPERTY_KEY = "sonar.stylecop.msBuildPath";
   public static final String STYLECOP_DLL_PATH_PROPERTY_KEY = "sonar.stylecop.styleCopDllPath";
@@ -53,6 +57,8 @@ public class StyleCopPlugin extends SonarPlugin {
     return ImmutableList.of(
       StyleCopRuleRepository.class,
       StyleCopSensor.class,
+      StyleCopProfileImporter.class,
+      StyleCopProfileExporter.class,
 
       PropertyDefinition.builder(STYLECOP_MSBUILD_PATH_PROPERTY_KEY)
         .name("Path to MsBuild.exe")

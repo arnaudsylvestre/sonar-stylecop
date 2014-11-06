@@ -20,8 +20,11 @@
 package org.sonar.plugins.stylecop;
 
 import com.google.common.collect.ImmutableList;
+
 import org.junit.Test;
 import org.sonar.api.config.PropertyDefinition;
+import org.sonar.plugins.stylecop.profiles.StyleCopProfileExporter;
+import org.sonar.plugins.stylecop.profiles.StyleCopProfileImporter;
 
 import java.util.List;
 
@@ -35,7 +38,9 @@ public class StyleCopPluginTest {
 
     assertThat(nonProperties(extensions)).containsOnly(
       StyleCopRuleRepository.class,
-      StyleCopSensor.class);
+      StyleCopSensor.class,
+      StyleCopProfileImporter.class,
+      StyleCopProfileExporter.class);
 
     assertThat(propertyKeys(extensions)).containsOnly(
       "sonar.stylecop.msBuildPath",
