@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.api.profiles.ProfileImporter;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.rules.Rule;
@@ -38,6 +40,7 @@ import org.sonar.plugins.stylecop.profiles.util.StyleCopRuleParser;
 public class StyleCopProfileImporter extends ProfileImporter {
 	private RuleFinder ruleFinder;
 
+	  private static final Logger LOG = LoggerFactory.getLogger(StyleCopProfileImporter.class);
 	  public StyleCopProfileImporter(RuleFinder ruleFinder) {
 	    super(StyleCopPlugin.REPOSITORY_KEY, StyleCopPlugin.REPOSITORY_NAME);
 	    setSupportedLanguages(StyleCopPlugin.LANGUAGE_KEY);
@@ -51,7 +54,7 @@ public class StyleCopProfileImporter extends ProfileImporter {
 	  public RulesProfile importProfile(Reader reader, ValidationMessages messages) {
 	    RulesProfile profile = RulesProfile.create();
 	    profile.setLanguage(StyleCopPlugin.LANGUAGE_KEY);
-
+	    LOG.error("Import StyleCop");
 	    try {
 	      List<StyleCopRule> styleCopConfig = StyleCopRuleParser.parse(IOUtils.toString(reader));
 

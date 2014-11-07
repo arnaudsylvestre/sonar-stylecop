@@ -29,8 +29,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonar.api.profiles.ProfileExporter;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.rules.ActiveRule;
@@ -48,15 +46,13 @@ import com.google.common.collect.Maps;
  */
 public class StyleCopProfileExporter extends ProfileExporter {
 
-	RuleFinder ruleFinder;
-	  private static final Logger LOG = LoggerFactory.getLogger(StyleCopProfileExporter.class);
+  RuleFinder ruleFinder;
 	
   public StyleCopProfileExporter(RuleFinder ruleFinder) {
     super(StyleCopPlugin.REPOSITORY_KEY, StyleCopPlugin.REPOSITORY_NAME);
     setSupportedLanguages(StyleCopPlugin.LANGUAGE_KEY);
     setMimeType("application/xml");
     this.ruleFinder = ruleFinder;
-    LOG.error("Create with ruleFinder");
   }
 
   /**
@@ -65,7 +61,6 @@ public class StyleCopProfileExporter extends ProfileExporter {
   @Override
   public void exportProfile(RulesProfile profile, Writer writer) {
     try {
-        LOG.error("Try to export");
       printStartOfFile(writer);
 
       printRules(profile, writer);
